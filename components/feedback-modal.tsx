@@ -1,9 +1,11 @@
 'use client';
 
 import { useLearningStore } from '@/lib/stores/learning-store';
+import { useState } from 'react';
 
 export default function FeedbackModal() {
-    const { feedback, clearFeedback, fetchNewQuestion, currentQuestion } = useLearningStore();
+    const { feedback, clearFeedback, fetchNewQuestion } = useLearningStore();
+    const [selectedLanguage] = useState('javascript');
 
     if (!feedback) return null;
 
@@ -11,9 +13,7 @@ export default function FeedbackModal() {
 
     const handleNext = () => {
         clearFeedback();
-        if (currentQuestion?.language) {
-            fetchNewQuestion(currentQuestion.language);
-        }
+        fetchNewQuestion(selectedLanguage);
     };
 
     return (
