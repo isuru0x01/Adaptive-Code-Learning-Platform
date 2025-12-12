@@ -1,90 +1,98 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
+import { useLearningStore } from '@/lib/stores/learning-store';
 
-interface QuestionPanelProps {
-    question: any;
-    isLoading: boolean;
-    onSubmit: (answer: string) => void;
-    onNextQuestion: () => void;
-}
+export default function QuestionPanel() {
+    const {
+        currentQuestion,
+        isLoading,
+        submitAnswer,
+        fetchNewQuestion,
+    } = useLearningStore();
 
-export default function QuestionPanel({
-    question,
-    isLoading,
-    onSubmit,
-    onNextQuestion,
-}: QuestionPanelProps) {
     const [answer, setAnswer] = useState('');
-    const [startTime, setStartTime] = useState<number>(Date.now());
     const textareaRef = useRef<HTMLTextAreaElement>(null);
 
     // Reset state when new question loads
     useEffect(() => {
-        if (question) {
+        if (currentQuestion) {
             setAnswer('');
-            setStartTime(Date.now());
-            // Auto-focus answer input (UX improvement)
+            // Auto-focus answer input
             setTimeout(() => textareaRef.current?.focus(), 100);
         }
-    }, [question?.id]);
+    }, [currentQuestion?.id]);
 
     const handleSubmit = () => {
-        if (!answer.trim()) return;
-
-        const timeSpent = Math.floor((Date.now() - startTime) / 1000);
-        onSubmit(answer);
+        if (!answer.trim() || !currentQuestion) return;
+        submitAnswer(answer);
     };
 
     if (isLoading) {
         return (
-            <div className="p-6 space-y-6">
-                <div className="h-10 w-3/4 bg-gray-200 animate-pulse rounded" />
-                <div className="h-32 w-full bg-gray-200 animate-pulse rounded" />
-                <div className="h-10 w-32 bg-gray-200 animate-pulse rounded" />
+            <div className="space-y-6">
+                <div className="h-10 w-3/4 bg-gray-200 animate-pulse rounded-lg" />
+                <div className="h-32 w-full bg-gray-200 animate-pulse rounded-lg" />
+                <div className="h-12 w-full bg-gray-200 animate-pulse rounded-lg" />
             </div>
         );
     }
 
-    if (!question) {
+    if (!currentQuestion) {
         return (
             <div className="flex items-center justify-center h-full">
-                <button
-                    onClick={onNextQuestion}
-                    className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
-                >
-                    Start Learning
-                </button>
+                <div className="text-center">
+                    <p className="text-gray-600 mb-4">No question loaded</p>
+                    <button
+                        onClick={() => fetchNewQuestion('javascript')}
+                        className="px-6 py-3 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition font-medium"
+                    >
+                        Load Question
+                    </button>
+                </div>
             </div>
         );
     }
 
     return (
-        <div className="h-full flex flex-col p-6">
+        <div className="h-full flex flex-col">
             {/* Difficulty indicator */}
-            <div className="mb-4">
-                <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium
-          ${question.difficulty === 'beginner' ? 'bg-green-100 text-green-800' :
-                        question.difficulty === 'easy' ? 'bg-blue-100 text-blue-800' :
-                            question.difficulty === 'medium' ? 'bg-yellow-100 text-yellow-800' :
-                                question.difficulty === 'hard' ? 'bg-orange-100 text-orange-800' :
-                                    'bg-red-100 text-red-800'}`}>
-                    {question.difficulty} · Score: {question.currentScore}/100
-                </span>
+            <div className="mb-6">
+                <div className="flex items-center gap-3">
+                    <span
+                        className={`inline-flex items-center px-3 py-1.5 rounded-lg text-sm font-semibold ${currentQuestion.difficulty === 'beginner'
+                                ? 'bg-green-100 text-green-700'
+                                : currentQuestion.difficulty === 'easy'
+                                    ? 'bg-blue-100 text-blue-700'
+                                    : currentQuestion.difficulty === 'medium'
+                                        ? 'bg-yellow-100 text-yellow-700'
+                                        : currentQuestion.difficulty === 'hard'
+                                            ? 'bg-orange-100 text-orange-700'
+                                            : 'bg-red-100 text-red-700'
+                            }`}
+                    >
+                        {currentQuestion.difficulty?.toUpperCase()}
+                    </span>
+                    <span className="text-sm text-gray-600 font-medium">
+                        Score: {currentQuestion.currentScore}/100
+                    </span>
+                </div>
             </div>
 
             {/* Question text */}
-            <div className="border rounded-lg p-6 mb-6 bg-white shadow-sm">
-                <h2 className="text-xl font-semibold mb-4">Question</h2>
-                <p className="text-lg leading-relaxed">{question.question}</p>
+            <div className="border border-gray-200 rounded-xl p-6 mb-6 bg-white shadow-sm">
+                <h2 className="text-lg font-bold text-gray-900 mb-4">Question</h2>
+                <p className="text-gray-700 leading-relaxed text-lg">
+                    {currentQuestion.question}
+                </p>
 
-                {/* Concepts tags (helps learner understand what's being tested) */}
-                {question.concepts && question.concepts.length > 0 && (
-                    <div className="mt-4 flex flex-wrap gap-2">
-                        {question.concepts.map((concept: string, idx: number) => (
+                {/* Concepts tags */}
+                {currentQuestion.concepts && currentQuestion.concepts.length > 0 && (
+                    <div className="mt-5 flex flex-wrap gap-2">
+                        {currentQuestion.concepts.map((concept: string, idx: number) => (
                             <span
                                 key={idx}
-                                className="px-2 py-1 text-xs bg-gray-100 text-gray-700 rounded"
+                                className="px-3 py-1 text-xs bg-gray-100 text-gray-700 rounded-lg font-medium"
                             >
                                 {concept}
                             </span>
@@ -95,7 +103,7 @@ export default function QuestionPanel({
 
             {/* Answer input */}
             <div className="flex-1 flex flex-col">
-                <label htmlFor="answer" className="text-sm font-medium mb-2">
+                <label htmlFor="answer" className="text-sm font-semibold text-gray-900 mb-2">
                     Your Answer
                 </label>
                 <textarea
@@ -104,9 +112,9 @@ export default function QuestionPanel({
                     value={answer}
                     onChange={(e) => setAnswer(e.target.value)}
                     placeholder="Type your answer here..."
-                    className="flex-1 resize-none font-mono border rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="flex-1 resize-none font-mono border-2 border-gray-200 rounded-xl p-4 focus:outline-none focus:border-blue-600 transition bg-white text-gray-900"
                     onKeyDown={(e) => {
-                        // Submit on Cmd+Enter or Ctrl+Enter (UX shortcut)
+                        // Submit on Cmd+Enter or Ctrl+Enter
                         if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
                             e.preventDefault();
                             handleSubmit();
@@ -114,7 +122,7 @@ export default function QuestionPanel({
                     }}
                 />
                 <p className="text-xs text-gray-500 mt-2">
-                    Press Cmd+Enter (Mac) or Ctrl+Enter (Windows) to submit
+                    Press <kbd className="px-2 py-0.5 bg-gray-100 rounded text-gray-700 font-mono">⌘+Enter</kbd> or <kbd className="px-2 py-0.5 bg-gray-100 rounded text-gray-700 font-mono">Ctrl+Enter</kbd> to submit
                 </p>
             </div>
 
@@ -123,13 +131,13 @@ export default function QuestionPanel({
                 <button
                     onClick={handleSubmit}
                     disabled={!answer.trim()}
-                    className="flex-1 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition"
+                    className="flex-1 px-6 py-3.5 bg-gray-900 text-white rounded-lg hover:bg-gray-800 disabled:bg-gray-300 disabled:cursor-not-allowed transition font-semibold shadow-sm"
                 >
                     Submit Answer
                 </button>
                 <button
-                    onClick={onNextQuestion}
-                    className="px-6 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition"
+                    onClick={() => fetchNewQuestion(currentQuestion.language || 'javascript')}
+                    className="px-6 py-3.5 border-2 border-gray-200 rounded-lg hover:bg-gray-50 transition font-semibold text-gray-700"
                 >
                     Skip
                 </button>
