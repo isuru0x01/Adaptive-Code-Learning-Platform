@@ -1,11 +1,9 @@
 'use client';
 
 import { useLearningStore } from '@/lib/stores/learning-store';
-import { useState } from 'react';
 
 export default function FeedbackModal() {
-    const { feedback, clearFeedback, fetchNewQuestion } = useLearningStore();
-    const [selectedLanguage] = useState('javascript');
+    const { feedback, clearFeedback, fetchNewQuestion, currentQuestion } = useLearningStore();
 
     if (!feedback) return null;
 
@@ -13,7 +11,9 @@ export default function FeedbackModal() {
 
     const handleNext = () => {
         clearFeedback();
-        fetchNewQuestion(selectedLanguage);
+        // Use the language from current question, fallback to javascript
+        const language = currentQuestion?.language || 'javascript';
+        fetchNewQuestion(language);
     };
 
     return (

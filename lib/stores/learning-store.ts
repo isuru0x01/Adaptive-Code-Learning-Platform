@@ -8,6 +8,7 @@ interface Question {
     concepts: string[];
     difficulty: string;
     currentScore: number;
+    language?: string;
 }
 
 interface Feedback {
@@ -56,11 +57,11 @@ export const useLearningStore = create<LearningStore>()(
                     if (!response.ok) throw new Error('Failed to generate question');
 
                     const data = await response.json();
-                    set({ currentQuestion: data, isLoading: false });
+                    // Add language to the question data
+                    set({ currentQuestion: { ...data, language }, isLoading: false });
                 } catch (error) {
                     console.error(error);
                     set({ isLoading: false });
-                    // TODO: Show error toast
                 }
             },
 
