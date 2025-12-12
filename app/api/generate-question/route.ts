@@ -10,7 +10,7 @@ const RequestSchema = z.object({
 
 export async function POST(request: NextRequest) {
     try {
-        const supabase = await createServerClient();
+        const supabase = createServerClient();
 
         // DEV MODE: Bypass auth for testing (REMOVE IN PRODUCTION!)
         const DEV_MODE = process.env.NEXT_PUBLIC_DEV_MODE === 'true';
