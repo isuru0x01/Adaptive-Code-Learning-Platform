@@ -12,24 +12,15 @@ const RequestSchema = z.object({
 
 export async function POST(request: NextRequest) {
     try {
-        const supabase = createServerClient();
+        const supabase = await createServerClient();
 
-        // DEV MODE: Bypass auth for testing (REMOVE IN PRODUCTION!)
-        const DEV_MODE = process.env.NEXT_PUBLIC_DEV_MODE === 'true';
-        let userId: string;
-
-        if (DEV_MODE) {
-            // Use a test user ID for development
-            userId = '00000000-0000-0000-0000-000000000001';
-            console.log('⚠️  DEV MODE: Using test user ID. Set NEXT_PUBLIC_DEV_MODE=false in production!');
-        } else {
-            // Verify authentication
-            const { data: { user }, error: authError } = await supabase.auth.getUser();
-            if (authError || !user) {
-                return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-            }
-            userId = user.id;
+        // Verify authentication
+        const { data: { user }, error: authError } = await supabase.auth.getUser();
+        if (authError || !user) {
+            return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
+
+        const userId = user.id;
 
         const body = await request.json();
         const { questionId, userAnswer, timeSpentSeconds, sessionId } = RequestSchema.parse(body);

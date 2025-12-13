@@ -5,6 +5,7 @@ import { useLearningStore } from '@/lib/stores/learning-store';
 import CodeViewer from '@/components/code-viewer';
 import QuestionPanel from '@/components/question-panel';
 import FeedbackModal from '@/components/feedback-modal';
+import AuthButton from '@/components/auth-button';
 import Link from 'next/link';
 
 export default function LearnPage() {
@@ -50,9 +51,7 @@ export default function LearnPage() {
                         </select>
                     </div>
 
-                    <Link href="/" className="text-gray-600 hover:text-gray-900 transition font-medium">
-                        ← Back to Home
-                    </Link>
+                    <AuthButton />
                 </div>
             </nav>
 

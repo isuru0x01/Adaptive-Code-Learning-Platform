@@ -3,6 +3,8 @@
 import Link from 'next/link';
 import { useState } from 'react';
 
+import AuthButton from '@/components/auth-button';
+
 export default function HomePage() {
   const [selectedLanguage, setSelectedLanguage] = useState('javascript');
 
@@ -61,9 +63,7 @@ export default function HomePage() {
             <Link href="/about" className="text-gray-600 hover:text-gray-900 transition font-medium">
               About
             </Link>
-            <Link href="/learn" className="px-6 py-2.5 bg-gray-900 text-white rounded-lg font-medium hover:bg-gray-800 transition shadow-sm">
-              Start Learning
-            </Link>
+            <AuthButton />
           </div>
         </div>
       </nav>
@@ -112,8 +112,8 @@ export default function HomePage() {
                     key={lang.id}
                     onClick={() => setSelectedLanguage(lang.id)}
                     className={`p-6 rounded-xl border-2 transition ${selectedLanguage === lang.id
-                        ? 'border-blue-600 bg-blue-50 shadow-md'
-                        : 'border-gray-200 bg-white hover:border-gray-300 hover:shadow-sm'
+                      ? 'border-blue-600 bg-blue-50 shadow-md'
+                      : 'border-gray-200 bg-white hover:border-gray-300 hover:shadow-sm'
                       }`}
                   >
                     <div className="text-4xl mb-2">{lang.icon}</div>
