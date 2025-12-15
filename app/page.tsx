@@ -63,6 +63,12 @@ export default function HomePage() {
             <Link href="/about" className="text-gray-600 hover:text-gray-900 transition font-medium">
               About
             </Link>
+            <Link
+              href="/leaderboard"
+              className="px-4 py-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg font-medium hover:shadow-lg transition transform hover:scale-105"
+            >
+              🏆 Leaderboard
+            </Link>
             <AuthButton />
           </div>
         </div>
@@ -89,7 +95,7 @@ export default function HomePage() {
                 href="/learn"
                 className="px-8 py-4 bg-gray-900 text-white rounded-lg text-lg font-semibold hover:bg-gray-800 transition shadow-lg shadow-gray-900/10"
               >
-                Start Free Trial
+                Start Learning
               </Link>
               <a
                 href="#features"

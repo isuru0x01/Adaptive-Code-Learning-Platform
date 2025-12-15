@@ -10,8 +10,9 @@ NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
 SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key
 
-# OpenRouter API
+# LLM Providers
 OPENROUTER_API_KEY=your_openrouter_api_key
+GROQ_API_KEY=your_groq_api_key
 
 # Application
 NEXT_PUBLIC_APP_URL=http://localhost:3000
@@ -36,6 +37,15 @@ NEXT_PUBLIC_DEV_MODE=true
 2. Sign up and navigate to Keys
 3. Create a new API key
 4. Copy to `OPENROUTER_API_KEY`
+
+### Groq (Fallback Provider)
+1. Go to [groq.com](https://groq.com)
+2. Sign up for a free account
+3. Navigate to API Keys section
+4. Create a new API key
+5. Copy to `GROQ_API_KEY`
+
+**Note:** Groq is used as an automatic fallback when OpenRouter hits rate limits. Both providers enhance reliability.
 
 ## Important Notes
 

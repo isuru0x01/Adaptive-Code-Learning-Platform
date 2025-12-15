@@ -65,12 +65,21 @@ export async function POST(request: NextRequest) {
         });
 
         // Update session stats
-        if (sessionId) {
-            await supabase.from('learning_sessions').update({
-                questions_correct: answerCheck.is_correct
-                    ? supabase.rpc('increment', { x: 1 })
-                    : undefined,
-            }).eq('id', sessionId);
+        if (sessionId && answerCheck.is_correct) {
+            const { data: currentSession } = await supabase
+                .from('learning_sessions')
+                .select('questions_correct')
+                .eq('id', sessionId)
+                .single();
+
+            if (currentSession) {
+                await supabase
+                    .from('learning_sessions')
+                    .update({
+                        questions_correct: currentSession.questions_correct + 1
+                    })
+                    .eq('id', sessionId);
+            }
         }
 
         return NextResponse.json({

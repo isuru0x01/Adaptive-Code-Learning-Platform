@@ -96,22 +96,52 @@ export const useLearningStore = create<LearningStore>()(
 
             startSession: async (language: string) => {
                 // Create new session in DB
-                const response = await fetch('/api/sessions/start', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ language }),
-                });
+                console.log('🎬 [SESSION] Starting new session for language:', language);
+                try {
+                    const response = await fetch('/api/sessions/start', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ language }),
+                    });
 
-                const { sessionId } = await response.json();
-                set({ sessionId });
+                    if (!response.ok) {
+                        const error = await response.json();
+                        console.error('❌ [SESSION] Failed to start session:', error);
+                        throw new Error('Failed to start session');
+                    }
+
+                    const { sessionId } = await response.json();
+                    console.log('✅ [SESSION] Session started successfully:', sessionId);
+                    set({ sessionId });
+                } catch (error) {
+                    console.error('❌ [SESSION] Start session error:', error);
+                }
             },
 
             endSession: async () => {
                 const sessionId = get().sessionId;
-                if (!sessionId) return;
+                if (!sessionId) {
+                    console.warn('⚠️ [SESSION] No active session to end');
+                    return;
+                }
 
-                await fetch(`/api/sessions/${sessionId}/end`, { method: 'POST' });
-                set({ sessionId: null });
+                console.log('🛑 [SESSION] Ending session:', sessionId);
+                try {
+                    const response = await fetch(`/api/sessions/${sessionId}/end`, {
+                        method: 'POST'
+                    });
+
+                    if (!response.ok) {
+                        const error = await response.json();
+                        console.error('❌ [SESSION] Failed to end session:', error);
+                    } else {
+                        console.log('✅ [SESSION] Session ended successfully');
+                    }
+
+                    set({ sessionId: null });
+                } catch (error) {
+                    console.error('❌ [SESSION] End session error:', error);
+                }
             },
         }),
         { name: 'learning-store' }

@@ -10,11 +10,22 @@ import Link from 'next/link';
 
 export default function LearnPage() {
     const [selectedLanguage, setSelectedLanguage] = useState<string>('javascript');
-    const { fetchNewQuestion, currentQuestion, isLoading } = useLearningStore();
+    const { fetchNewQuestion, currentQuestion, isLoading, startSession, endSession } = useLearningStore();
 
+    // Start session when component mounts or language changes
     useEffect(() => {
-        fetchNewQuestion(selectedLanguage);
-    }, [selectedLanguage, fetchNewQuestion]);
+        const initializeSession = async () => {
+            await startSession(selectedLanguage);
+            await fetchNewQuestion(selectedLanguage);
+        };
+
+        initializeSession();
+
+        // End session when component unmounts
+        return () => {
+            endSession();
+        };
+    }, [selectedLanguage, startSession, fetchNewQuestion, endSession]);
 
     const languages = [
         { id: 'javascript', name: 'JavaScript', icon: '🟨' },
@@ -51,7 +62,15 @@ export default function LearnPage() {
                         </select>
                     </div>
 
-                    <AuthButton />
+                    <div className="flex items-center gap-4">
+                        <Link
+                            href="/leaderboard"
+                            className="px-4 py-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg font-medium hover:shadow-lg transition transform hover:scale-105"
+                        >
+                            🏆 Leaderboard
+                        </Link>
+                        <AuthButton />
+                    </div>
                 </div>
             </nav>
 
