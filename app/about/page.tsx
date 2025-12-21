@@ -1,27 +1,14 @@
 'use client';
 
 import Link from 'next/link';
+import { SiteHeader } from '@/components/site-header';
 
 export default function AboutPage() {
     return (
         <div className="min-h-screen bg-white">
             {/* Navigation */}
-            <nav className="fixed top-0 w-full bg-white/80 backdrop-blur-md border-b border-gray-200 z-50">
-                <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-                    <Link href="/" className="flex items-center gap-2">
-                        <span className="text-3xl">🧠</span>
-                        <span className="text-xl font-bold text-gray-900">Read The Code</span>
-                    </Link>
-                    <div className="flex items-center gap-6">
-                        <Link href="/" className="text-gray-600 hover:text-gray-900 transition font-medium">
-                            Home
-                        </Link>
-                        <Link href="/learn" className="px-6 py-2.5 bg-gray-900 text-white rounded-lg font-medium hover:bg-gray-800 transition shadow-sm">
-                            Start Learning
-                        </Link>
-                    </div>
-                </div>
-            </nav>
+            {/* Navigation */}
+            <SiteHeader />
 
             {/* Content */}
             <div className="pt-32 pb-20 px-6">

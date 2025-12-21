@@ -4,13 +4,27 @@ import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { useState } from 'react';
 
+interface Language {
+    id: string;
+    name: string;
+    icon: string;
+}
+
 interface CodeViewerProps {
     code?: string;
     language: string;
     isLoading: boolean;
+    languages?: Language[];
+    onLanguageChange?: (languageId: string) => void;
 }
 
-export default function CodeViewer({ code, language, isLoading }: CodeViewerProps) {
+export default function CodeViewer({
+    code,
+    language,
+    isLoading,
+    languages,
+    onLanguageChange,
+}: CodeViewerProps) {
     const [copied, setCopied] = useState(false);
 
     const handleCopy = () => {
@@ -47,9 +61,30 @@ export default function CodeViewer({ code, language, isLoading }: CodeViewerProp
             {/* Code header */}
             <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-2">
-                    <span className="px-3 py-1 text-xs font-mono bg-blue-100 text-blue-700 rounded-lg font-semibold">
-                        {language.toUpperCase()}
-                    </span>
+                    {languages && onLanguageChange ? (
+                        <div className="relative group">
+                            <select
+                                value={language}
+                                onChange={(e) => onLanguageChange(e.target.value)}
+                                className="appearance-none pl-3 pr-8 py-1.5 text-sm font-medium bg-gray-50 text-gray-700 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 cursor-pointer hover:bg-white hover:border-gray-300 transition-all font-sans"
+                            >
+                                {languages.map((lang) => (
+                                    <option key={lang.id} value={lang.id}>
+                                        {lang.icon} {lang.name}
+                                    </option>
+                                ))}
+                            </select>
+                            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-500 group-hover:text-gray-700">
+                                <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                                    <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+                                </svg>
+                            </div>
+                        </div>
+                    ) : (
+                        <span className="px-3 py-1 text-xs font-mono bg-blue-100 text-blue-700 rounded-lg font-semibold">
+                            {language.toUpperCase()}
+                        </span>
+                    )}
                 </div>
                 <button
                     onClick={handleCopy}

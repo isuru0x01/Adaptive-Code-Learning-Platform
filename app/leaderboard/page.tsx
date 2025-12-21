@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import AuthButton from '@/components/auth-button';
+import { SiteHeader } from '@/components/site-header';
 
 interface LeaderboardEntry {
     rank: number;
@@ -77,26 +78,8 @@ export default function LeaderboardPage() {
     return (
         <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50">
             {/* Navigation */}
-            <nav className="fixed top-0 w-full bg-white/80 backdrop-blur-md border-b border-gray-200 z-50 shadow-sm">
-                <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-                    <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition">
-                        <span className="text-3xl">🧠</span>
-                        <span className="text-xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
-                            Read The Code
-                        </span>
-                    </Link>
-
-                    <div className="flex items-center gap-4">
-                        <Link
-                            href="/learn"
-                            className="px-4 py-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg font-medium hover:shadow-lg transition transform hover:scale-105"
-                        >
-                            Start Learning
-                        </Link>
-                        <AuthButton />
-                    </div>
-                </div>
-            </nav>
+            {/* Navigation */}
+            <SiteHeader />
 
             {/* Main Content */}
             <div className="pt-24 pb-12 px-6">
